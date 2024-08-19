@@ -14,7 +14,7 @@
 <meta property="og:description" content="ELF 是 Executable and Linkable Format 的缩写，这种格式被用来存储 Linux 系统下的二进制可执行文件。拿 C 文件来说，用高级语言编写的源代码被编译成可执行的二进制目标文件（以下简称 target）的格式就是 ELF 格式。也就是说不管是一个简单的 hello world 程序还是拥有成千上万行代码的大型项目，被编译后得到都是一个 ELF 格式的二进制文件。运">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-08-17T07:47:04.000Z">
-<meta property="article:modified_time" content="2024-08-18T09:10:34.169Z">
+<meta property="article:modified_time" content="2024-08-19T06:07:18.154Z">
 <meta property="article:author" content="Chi">
 <meta name="twitter:card" content="summary">
     
@@ -107,6 +107,10 @@
     </div>
     
     
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF-Header"><span class="toc-number">1.</span> <span class="toc-text">ELF Header</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Section-Header-Table"><span class="toc-number">2.</span> <span class="toc-text">Section Header Table</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Symtab"><span class="toc-number">3.</span> <span class="toc-text">.Symtab</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Strtab"><span class="toc-number">4.</span> <span class="toc-text">.Strtab</span></a></li></ol>
+      </div>
+    
   </span>
 </div>
 
@@ -131,7 +135,7 @@
       
         <time datetime="2024-08-17T07:47:04.000Z" class="dt-published" itemprop="datePublished">2024-08-17</time>
         
-        (Updated: <time datetime="2024-08-18T09:10:34.169Z" class="dt-updated" itemprop="dateModified">2024-08-18</time>)
+        (Updated: <time datetime="2024-08-19T06:07:18.154Z" class="dt-updated" itemprop="dateModified">2024-08-19</time>)
         
       
     </div>
@@ -146,9 +150,9 @@
   
 
   <div class="content e-content" itemprop="articleBody">
-    <p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a> 是 Executable and Linkable Format 的缩写，这种格式被用来存储 Linux 系统下的二进制可执行文件。拿 C 文件来说，用高级语言编写的源代码被编译成可执行的二进制目标文件（以下简称 target）的格式就是 ELF 格式。也就是说不管是一个简单的 hello world 程序还是拥有成千上万行代码的大型项目，被编译后得到都是一个 ELF 格式的二进制文件。运行 target 就是让操作系统的程序调度器把它从硬盘加载到内存中，然后把 target 组织成一个进程，让 CPU 指向代码段的第一条指令，后面就交给 CPU 和操作系统来维护进程的运行了。需要提到的是，对于只进行了编译但未进行链接而得到的可重定位文件或者已经进行了链接的可执行文件，其实他们的存储格式都是 ELF，只是内容上会存在稍许区别，若要细究则需进一步了解编译和链接的过程 ELF。</p>
-<p>本文先描述 ELF 的组织结构，重点解释 ELF 头（ELF header），段表（section header table），符号表（.symtab），字符串表（.strtab）。在阐述完概念之后，再通过对编译链接得到的 target 进行实际的解析，具体的，通过解析 target 的 .text 中的代码信息来提取程序的函数调用顺序，以达到对 ELF 文件结构更加直观的展现，加深理解。</p>
-
+    <p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a> 是 Executable and Linkable Format 的缩写，这种格式被用来存储 Linux 系统下的二进制可执行文件。拿 C 文件来说，用高级语言编写的源代码被编译成可执行的二进制目标文件（以下简称 target）的格式就是 ELF 格式。也就是说不管是一个简单的 hello world 程序还是拥有成千上万行代码的大型项目，被编译后得到都是一个 ELF 格式的二进制文件。运行 target 就是让操作系统的程序调度器把它从硬盘加载到内存中，然后把 target 组织成一个进程，让 CPU 指向代码段的第一条指令，后面就交给 CPU 和操作系统来维护进程的运行了。需要提到的是，对于只进行了编译但未进行链接而得到的可重定位文件或者已经进行了链接的可执行文件，其实他们的存储格式都是 ELF，只是内容上会存在稍许区别，若要细究则需进一步了解编译和链接的过程。</p>
+<p>本文先描述 ELF 的组织结构，重点解释 ELF 头（ELF header），段表（section header table），符号表（.symtab），字符串表（.strtab）。在阐述完概念之后，再通过对编译链接得到的 target 进行实际的解析，具体的，通过解析 target 的 .text 中的代码信息来提取程序的函数调用顺序，以达到对 ELF 文件结构更加直观的展现，加深理解。需要说明的是，本文对 ELF 的介绍不会面面俱到，甚至可以说偏于一隅，因为本文只是想通过整体的介绍 ELF 的组织结构和对结构的实际解析来起到一个抛砖引玉的作用，目的是让读者阅读完以后能拥有举一反三的能力，来更加深入的探索 ELF 的其他知识点。</p>
+<h2 id="ELF-Header"><a href="#ELF-Header" class="headerlink" title="ELF Header"></a>ELF Header</h2><h2 id="Section-Header-Table"><a href="#Section-Header-Table" class="headerlink" title="Section Header Table"></a>Section Header Table</h2><h2 id="Symtab"><a href="#Symtab" class="headerlink" title=".Symtab"></a>.Symtab</h2><h2 id="Strtab"><a href="#Strtab" class="headerlink" title=".Strtab"></a>.Strtab</h2>
   </div>
 </article>
 
@@ -172,6 +176,10 @@
 
     
     
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF-Header"><span class="toc-number">1.</span> <span class="toc-text">ELF Header</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Section-Header-Table"><span class="toc-number">2.</span> <span class="toc-text">Section Header Table</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Symtab"><span class="toc-number">3.</span> <span class="toc-text">.Symtab</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Strtab"><span class="toc-number">4.</span> <span class="toc-text">.Strtab</span></a></li></ol>
+      </div>
+    
 
     <div id="share-footer" style="display: none">
       <ul>
@@ -192,6 +200,8 @@
 
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
         
         <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
