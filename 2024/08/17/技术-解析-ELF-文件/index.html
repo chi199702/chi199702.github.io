@@ -14,7 +14,7 @@
 <meta property="og:description" content="ELF 是 Executable and Linkable Format 的缩写，这种格式被用来存储 Linux 系统下的二进制可执行文件。拿 C 文件来说，用高级语言编写的源代码被编译成可执行的二进制目标文件(以下简称 target )的格式就是 ELF 格式。也就是说不管是一个简单的 hello world 程序还是拥有成千上万行代码的大型项目，被编译后得到都是一个 ELF 格式的二进制文件。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-08-17T07:47:04.000Z">
-<meta property="article:modified_time" content="2024-08-30T14:03:42.099Z">
+<meta property="article:modified_time" content="2024-08-30T14:07:52.835Z">
 <meta property="article:author" content="Chi">
 <meta name="twitter:card" content="summary">
     
@@ -135,7 +135,7 @@
       
         <time datetime="2024-08-17T07:47:04.000Z" class="dt-published" itemprop="datePublished">2024-08-17</time>
         
-        (Updated: <time datetime="2024-08-30T14:03:42.099Z" class="dt-updated" itemprop="dateModified">2024-08-30</time>)
+        (Updated: <time datetime="2024-08-30T14:07:52.835Z" class="dt-updated" itemprop="dateModified">2024-08-30</time>)
         
       
     </div>
@@ -154,7 +154,7 @@
 <p>本文先描述 ELF 的组织结构，重点解释 ELF 头(ELF header)，段表(section header table)，符号表(.symtab)，字符串表(.strtab)。在阐述完概念之后，再通过对只进行了编译(不进行链接)得到的 target 进行实际的解析，具体的，通过解析 target 的 .symtab 中的符号信息来获取程序中使用到的全部函数的名称，以达到对 ELF 文件结构更加直观的展现，加深理解。需要说明的是，本文对 ELF 的介绍不会面面俱到，甚至可以说偏于一隅，因为本文只是想通过整体的介绍 ELF 的组织结构和对结构的实际解析来起到一个抛砖引玉的作用，目的是让读者阅读完以后能拥有举一反三的能力，来更加深入的探索 ELF 的其他知识点。</p>
 <p>首先我们应该有一个这样的认识，虽然 ELF 是一个二进制文件，其中的内容都是 0&#x2F;1 序列，用肉眼去识别等于是读天书，只有机器才能读懂机器语言。但是其中的内容排列方式都是要遵循 ELF 格式的，也就是说从 ELF 规范的角度来看，每一个二进制文件中的每一段 0&#x2F;1 序列(每一个字节)，都是严格遵守规范而可读的，即我们只要按照 ELF 的规范去解析即可得到目标内容。我们还可以使用类似 objdump&#x2F;readelf 的工具来辅助我们的解析。另外，读者需要具备一定的 C 语言、编译链接、进程内存布局的基础知识才更容易理解 ELF 中的内容。</p>
 <h2 id="Section-Header-Table"><a href="#Section-Header-Table" class="headerlink" title="Section Header Table"></a>Section Header Table</h2><p>为什么不先介绍 ELF Header 呢？ELF Header 虽然在 ELF 文件的头部，但是对于解析 ELF 文件来说，ELF Header 最大的作用是用来索引到Section Header Table，那么先介绍完 Section Header Table 再介绍其他的结构会更容易理解一些。其实从解析 ELF 文件的角度看，Section Header Table 才是最重要的结构，因为 ELF 文件除了头部以外，其他的都是 section。</p>
-<p>Section Header Table 我们就称为段表吧(也有把 section 翻译成节的)。上面也提到过，ELF 中除了头部，其他内容都是由一个一个的section 组成的，比如 .text,.data,.bss、.rodata、.symtab、.strtab 等，可能我们比较熟悉的就是代码段 .text 和数据段 .data。一个编译后的 C 程序被加载到内存后形成的<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/18278803/how-does-elf-file-format-defines-the-stack">进程的内存空间布局</a>有许多个段，其实这些段大部分(或许全部？)都被包含在 ELF 文件中，(或许？)调度器在把静态程序拷贝进内存的时候只是把重要的段拷贝进内存中而已。而段表，就是一个<strong>存放着 ELF 文件中所有段的信息的数组</strong>。要想解析 ELF 文件，必须先找到段表，再通过段表找到文件中的其他段。<strong>注意，(几乎)所有关于 ELF 的结构信息都位于 &#x2F;usr&#x2F;include&#x2F;elf.h 这个头文件中</strong>，下面我们通过代码来分析一下段表的结构。</p>
+<p>Section Header Table 我们就称为段表吧(也有把 section 翻译成节的)。上面也提到过，ELF 中除了头部，其他内容都是由 section 组成的，比如 .text&#x2F;.data&#x2F;.bss&#x2F;.rodata&#x2F;.symtab&#x2F;.strtab 等，可能我们比较熟悉的就是代码段 .text 和数据段 .data。一个编译后的 C 程序被加载到内存后形成的<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/18278803/how-does-elf-file-format-defines-the-stack">进程的内存空间布局</a>有许多个段，其实这些段大部分(或许全部？)都被包含在 ELF 文件中，(或许？)调度器在把静态程序拷贝进内存的时候只是把重要的段拷贝进内存中而已。而段表，就是一个<strong>存放着 ELF 文件中所有段的信息的数组</strong>。要想解析 ELF 文件，必须先找到段表，再通过段表找到文件中的其他段。<strong>注意，(几乎)所有关于 ELF 的结构信息都位于 &#x2F;usr&#x2F;include&#x2F;elf.h 这个头文件中</strong>，下面我们通过代码来分析一下段表的结构。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Section header.  */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  Elf32_Word	sh_name;		<span class="comment">/* Section name (string tbl index) */</span></span><br><span class="line">  Elf32_Word	sh_type;		<span class="comment">/* Section type */</span></span><br><span class="line">  Elf32_Word	sh_flags;		<span class="comment">/* Section flags */</span></span><br><span class="line">  Elf32_Addr	sh_addr;		<span class="comment">/* Section virtual addr at execution */</span></span><br><span class="line">  Elf32_Off	sh_offset;		<span class="comment">/* Section file offset */</span></span><br><span class="line">  Elf32_Word	sh_size;		<span class="comment">/* Section size in bytes */</span></span><br><span class="line">  Elf32_Word	sh_link;		<span class="comment">/* Link to another section */</span></span><br><span class="line">  Elf32_Word	sh_info;		<span class="comment">/* Additional section information */</span></span><br><span class="line">  Elf32_Word	sh_addralign;		<span class="comment">/* Section alignment */</span></span><br><span class="line">  Elf32_Word	sh_entsize;		<span class="comment">/* Entry size if section holds table */</span></span><br><span class="line">&#125; Elf32_Shdr;</span><br></pre></td></tr></table></figure>
 
 <table>
