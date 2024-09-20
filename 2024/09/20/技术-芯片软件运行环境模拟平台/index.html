@@ -6,17 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="本文对芯片软件运行环境模拟平台进行简单介绍，由于版权问题，只会介绍一些设计思路。  运行效果图下图展示了游戏 bird 成功运行在了模拟平台上，除了 bird 游戏进程外，还有另一个进程在不断打印信息(见右下角)。  模拟平台各抽象层介绍 硬件层硬件层是对 riscv32 架构的模拟， 硬件抽象层操作系统应用层">
+    <meta name="description" content="本文对芯片软件运行环境模拟平台进行简单介绍，由于版权问题，只会介绍一些设计思路。 芯片软件运行环境模拟平台是一个对 riscv32 架构平台的模拟，其诞生的目的是为了通过对设计的硬件产品(CPU)的模拟，在不依赖于实体硬件的情况下，可将驱动代码、OS、应用程序模拟运行在硬件上以验证代码的准确性和性能。  运行效果图下图展示了游戏 bird 成功运行在了模拟平台上，除了 bird 游戏进程外，还有">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[技术] 芯片软件运行环境模拟平台">
 <meta property="og:url" content="http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/index.html">
 <meta property="og:site_name" content="ChiWeiming&#39;s Blog">
-<meta property="og:description" content="本文对芯片软件运行环境模拟平台进行简单介绍，由于版权问题，只会介绍一些设计思路。  运行效果图下图展示了游戏 bird 成功运行在了模拟平台上，除了 bird 游戏进程外，还有另一个进程在不断打印信息(见右下角)。  模拟平台各抽象层介绍 硬件层硬件层是对 riscv32 架构的模拟， 硬件抽象层操作系统应用层">
+<meta property="og:description" content="本文对芯片软件运行环境模拟平台进行简单介绍，由于版权问题，只会介绍一些设计思路。 芯片软件运行环境模拟平台是一个对 riscv32 架构平台的模拟，其诞生的目的是为了通过对设计的硬件产品(CPU)的模拟，在不依赖于实体硬件的情况下，可将驱动代码、OS、应用程序模拟运行在硬件上以验证代码的准确性和性能。  运行效果图下图展示了游戏 bird 成功运行在了模拟平台上，除了 bird 游戏进程外，还有">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/main.png">
 <meta property="og:image" content="http://example.com/images/machine.png">
+<meta property="og:image" content="http://example.com/images/memory_layout.png">
+<meta property="og:image" content="http://example.com/images/function_stream.png">
 <meta property="article:published_time" content="2024-09-20T01:41:26.000Z">
-<meta property="article:modified_time" content="2024-09-20T08:55:50.597Z">
+<meta property="article:modified_time" content="2024-09-20T16:19:01.610Z">
 <meta property="article:author" content="Chi">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/main.png">
@@ -140,7 +142,7 @@
       
         <time datetime="2024-09-20T01:41:26.000Z" class="dt-published" itemprop="datePublished">2024-09-20</time>
         
-        (Updated: <time datetime="2024-09-20T08:55:50.597Z" class="dt-updated" itemprop="dateModified">2024-09-20</time>)
+        (Updated: <time datetime="2024-09-20T16:19:01.610Z" class="dt-updated" itemprop="dateModified">2024-09-21</time>)
         
       
     </div>
@@ -157,12 +159,40 @@
   <div class="content e-content" itemprop="articleBody">
     <blockquote>
 <p>本文对芯片软件运行环境模拟平台进行简单介绍，由于版权问题，只会介绍一些设计思路。</p>
+<p>芯片软件运行环境模拟平台是一个对 riscv32 架构平台的模拟，其诞生的目的是为了通过对设计的硬件产品(CPU)的模拟，在不依赖于实体硬件的情况下，可将驱动代码、OS、应用程序模拟运行在硬件上以验证代码的准确性和性能。</p>
 </blockquote>
 <h2 id="运行效果图"><a href="#运行效果图" class="headerlink" title="运行效果图"></a>运行效果图</h2><p>下图展示了游戏 bird 成功运行在了模拟平台上，除了 bird 游戏进程外，还有另一个进程在不断打印信息(见右下角)。</p>
-<p><img src="/images/main.png"></p>
-<h2 id="模拟平台各抽象层介绍"><a href="#模拟平台各抽象层介绍" class="headerlink" title="模拟平台各抽象层介绍"></a>模拟平台各抽象层介绍</h2><p><img src="/images/machine.png"></p>
-<h3 id="硬件层"><a href="#硬件层" class="headerlink" title="硬件层"></a>硬件层</h3><p>硬件层是对 riscv32 架构的模拟，</p>
-<h3 id="硬件抽象层"><a href="#硬件抽象层" class="headerlink" title="硬件抽象层"></a>硬件抽象层</h3><h3 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h3><h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3>
+<p><img src="/images/main.png" alt="main"></p>
+<h2 id="模拟平台各抽象层介绍"><a href="#模拟平台各抽象层介绍" class="headerlink" title="模拟平台各抽象层介绍"></a>模拟平台各抽象层介绍</h2><h3 id="硬件层"><a href="#硬件层" class="headerlink" title="硬件层"></a>硬件层</h3><p>硬件层是对 riscv32 硬件架构的模拟。我们用数组模拟内存、用结构体封装了 riscv32 架构中的 32 个通用寄存器和额外的几个状态寄存器。除此之外，我们还使用 SDL 库对设备进行模拟，比如键盘、显示器、音频等。要执行的程序会被装载到内存中，<code>cpu.pc</code>被初始化指向内存的第一个字节，然后不停的<strong>取指令 ——&gt; 解析指令 ——&gt; 更新内存和寄存器状态 ——&gt; 取指令……</strong>，从宏观的视角来看，整个硬件系统就只是一个<strong>状态机，由内存和寄存器组成的状态机</strong>。</p>
+<p>对于设备的访问，硬件为每个设备的寄存器进行了内存映射，只要<strong>应用程序访问了某个设备的寄存器对应的内存地址，就会触发为设备设置的回调函数</strong>，从而让设备来处理用户请求。</p>
+<p><img src="/images/machine.png" alt="machine"></p>
+<h3 id="硬件抽象层"><a href="#硬件抽象层" class="headerlink" title="硬件抽象层"></a>硬件抽象层</h3><p>HAL 作为一个为应用程序提供运行时环境的库，具体而言，包括以下几方面：</p>
+<ul>
+<li>在程序开始运行前为程序指定堆栈指针，然后调用程序的<code>main</code>函数，在应用程序运行结束后<code>halt</code>系统的运行</li>
+<li>提供 I&#x2F;O 端口的抽象，包括串口、时钟、键盘、显示设备、音频等设备</li>
+<li>提供上下文管理，当发生异常、中断时为用户程序保存上下文并将其提交给操作系统</li>
+<li>虚拟化内存，为操作系统提供分页机制，是实现多进程运行的重要机制</li>
+<li>与架构无关的常用功能库，如<code>stdio.h</code>，<code>string.h</code>,<code>stdlib.h</code></li>
+</ul>
+<h3 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h3><p>直接基于硬件抽象层编写的用户程序是可以直接操控硬件的，如果用户程序编写错误，那么会导致整个系统崩溃。操作系统的诞生就是为了限制用户程序对硬件的访问权力，同时也通过利用 HAL 提供的虚拟化内存、上下文管理等机制实现了多进程运行。具体的，包括以下几方面：</p>
+<ul>
+<li>简易文件系统，封装了读写文件的接口</li>
+<li>加载器，用于加载用户程序到内存，我们将应用程序编译到 .data section，再将其取出到页面中</li>
+<li>设备访问，抽象了 HAL 提供的设备访问接口，包括对串口、键盘、显示器、时钟的访问</li>
+<li>虚拟内存管理，加载不同程序的绝对位置代码到不同物理块后，通过 2 级分页机制来让代码正确运行</li>
+<li>上下文切换、异常处理、中断处理、系统调用</li>
+</ul>
+<p><img src="/images/memory_layout.png" alt="memory_layout"></p>
+<p>下面从系统的内存布局视角来看整个系统的运行过程。上图是物理内存的使用情况，riscv32 架构的内存空间从 0x80000000 开始，kernal space 是 HAL + OS 的代码、数据和栈。<strong>是的，我们程序的内存布局进行了调整，正常情况下是 heap 在 stack 的下面</strong>。这样做以后我们就可以使用 heap 而不怕产生溢出导致 stack 被覆盖了。user space 是应用程序空间，我们将应用程序的绝对代码位置划分到成 [0x40000000,0x80000000]，然后使用分页机制让其映射到真实的物理空间。</p>
+<h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><p>我们提供给应用程序的运行时环境包括：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/riscvarchive/riscv-newlib">newlib</a>,它是 C 库的一个简易实现，其基本不依赖于运行时环境，我们让它调用我们自己实现的系统调用</li>
+<li>libos 运行时环境，其只包括某些系统调用</li>
+<li>libminiSDL，其是对 SDL API 的一个模拟库，底层调用的是系统调用函数</li>
+</ul>
+<p>我们在运行效果图中展示的 bird 游戏就是一个使用 SDL 库的应用程序，其通过使用 libminiSDL 库的函数来正确运行，下图从函数流的视角展现了整个系统的运行过程。</p>
+<p><img src="/images/function_stream.png" alt="function_stream"></p>
+
   </div>
 </article>
 
