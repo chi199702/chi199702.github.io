@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <meta name="description" content="本文对芯片软件运行环境模拟平台进行简单介绍，由于版权问题，只会介绍一些设计思路。 芯片软件运行环境模拟平台是一个对 riscv32 架构平台的模拟，其诞生的目的是为了通过对设计的硬件产品(CPU)的模拟，在不依赖于实体硬件的情况下，可将驱动代码、OS、应用程序模拟运行在硬件上以验证代码的准确性和性能。  运行效果图下图展示了游戏 bird 成功运行在了模拟平台上，除了 bird 游戏进程外，还有">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[技术] 芯片软件运行环境模拟平台">
-<meta property="og:url" content="http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/index.html">
+<meta property="og:title" content="芯片软件运行环境模拟平台">
+<meta property="og:url" content="http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/index.html">
 <meta property="og:site_name" content="ChiWeiming&#39;s Blog">
 <meta property="og:description" content="本文对芯片软件运行环境模拟平台进行简单介绍，由于版权问题，只会介绍一些设计思路。 芯片软件运行环境模拟平台是一个对 riscv32 架构平台的模拟，其诞生的目的是为了通过对设计的硬件产品(CPU)的模拟，在不依赖于实体硬件的情况下，可将驱动代码、OS、应用程序模拟运行在硬件上以验证代码的准确性和性能。  运行效果图下图展示了游戏 bird 成功运行在了模拟平台上，除了 bird 游戏进程外，还有">
 <meta property="og:locale" content="en_US">
@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://example.com/images/function_stream.png">
 <meta property="og:image" content="http://example.com/images/menu.png">
 <meta property="article:published_time" content="2024-09-20T01:41:26.000Z">
-<meta property="article:modified_time" content="2024-09-21T02:09:18.000Z">
+<meta property="article:modified_time" content="2026-07-07T13:50:00.363Z">
 <meta property="article:author" content="Chi">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/main.png">
@@ -42,7 +42,7 @@
       
     
     <!-- title -->
-    <title>[技术] 芯片软件运行环境模拟平台</title>
+    <title>芯片软件运行环境模拟平台</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -78,6 +78,8 @@
        --><li><a href="/about/">About</a></li><!--
      --><!--
        --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
      -->
       </ul>
     </span>
@@ -85,10 +87,10 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="Previous post" href="/2025/09/28/%E5%85%B6%E4%BB%96-record/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Previous post" href="/2025/09/28/%E6%9D%82%E8%AE%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="Next post" href="/2024/09/17/%E7%94%9F%E6%B4%BB-%E8%AE%B0%E5%BF%86%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BE%80%E4%BA%8B/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Next post" href="/2024/09/17/%E8%AE%B0%E5%BF%86%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BE%80%E4%BA%8B/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -101,17 +103,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&text=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&is_video=false&description=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=[技术] 芯片软件运行环境模拟平台&body=Check out this article: http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&name=[技术] 芯片软件运行环境模拟平台&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&t=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&text=芯片软件运行环境模拟平台"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&is_video=false&description=芯片软件运行环境模拟平台"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=芯片软件运行环境模拟平台&body=Check out this article: http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&name=芯片软件运行环境模拟平台&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&t=芯片软件运行环境模拟平台"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -131,7 +133,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        [技术] 芯片软件运行环境模拟平台
+        芯片软件运行环境模拟平台
     </h1>
 
 
@@ -145,13 +147,18 @@
       
         <time datetime="2024-09-20T01:41:26.000Z" class="dt-published" itemprop="datePublished">2024-09-20</time>
         
-        (Updated: <time datetime="2024-09-21T02:09:18.000Z" class="dt-updated" itemprop="dateModified">2024-09-21</time>)
+        (Updated: <time datetime="2026-07-07T13:50:00.363Z" class="dt-updated" itemprop="dateModified">2026-07-07</time>)
         
       
     </div>
 
 
       
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+    </div>
+
 
       
 
@@ -226,6 +233,8 @@
         
           <li><a href="/archives/">Writing</a></li>
         
+          <li><a href="/categories/">categories</a></li>
+        
       </ul>
     </div>
 
@@ -238,17 +247,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&text=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&is_video=false&description=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=[技术] 芯片软件运行环境模拟平台&body=Check out this article: http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&name=[技术] 芯片软件运行环境模拟平台&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/20/%E6%8A%80%E6%9C%AF-%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&t=[技术] 芯片软件运行环境模拟平台"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&text=芯片软件运行环境模拟平台"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&is_video=false&description=芯片软件运行环境模拟平台"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=芯片软件运行环境模拟平台&body=Check out this article: http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&title=芯片软件运行环境模拟平台"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&name=芯片软件运行环境模拟平台&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/09/20/%E8%8A%AF%E7%89%87%E8%BD%AF%E4%BB%B6%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%A8%A1%E6%8B%9F%E5%B9%B3%E5%8F%B0/&t=芯片软件运行环境模拟平台"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -283,6 +292,8 @@
        --><li><a href="/about/">About</a></li><!--
      --><!--
        --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
      -->
       </ul>
     </nav>
